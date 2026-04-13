@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  evolution-api:
+    image: atendai/evolution-api:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./evolution.env
+    volumes:
+      - evolution_instances:/evolution/instances
+    depends_on:
+      - evolution-mongodb
+      - evolution-redis
+  
+  evolution-mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      # Puxa do .env, com fallback seguro se não definir
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-evolution}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-senha_padrao_mudar}
+    volumes:
+      - evolution_mongo_data:/data/db
+  
+  evolution-redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - evolution_redis_data:/data
+
+volumes:
+  evolution_instances:
+  evolution_mongo_data:
+  evolution_redis_data:
