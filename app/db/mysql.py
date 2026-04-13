@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 
 from app.config import settings
 
@@ -26,8 +27,10 @@ def get_db():
 def test_connection():
     try:
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
+        print("Conexão com MySQL bem-sucedida.")
         return True
     except Exception as e:
         print(f"Erro na conexão: {e}")
+        print("❌ Falha na conexão com MySQL - verifique as env vars")
         return False
